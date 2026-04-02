@@ -37,6 +37,7 @@ import requests
 from aiohttp import web
 from dotenv import load_dotenv
 
+from aiogram.types import BufferedInputFile
 from aiogram import Bot, Dispatcher, F, Router
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
@@ -436,10 +437,13 @@ async def process_password(message: Message, state: FSMContext, bot: Bot) -> Non
     file_io.name = "NovaYeasT.xlsx"
 
     await message.answer_document(
-        document=file_io,
-        caption="Here is your NovaYeasT.xlsx file ✅",
-        reply_markup=main_keyboard(),
-    )
+    document=BufferedInputFile(
+        file=file_io.getvalue(),           # BytesIO এর কন্টেন্ট
+        filename="NovaYeasT.xlsx"          # ফাইলের নাম যেটা ইউজার দেখবে
+    ),
+    caption="Here is your NovaYeasT.xlsx file ✅",
+    reply_markup=main_keyboard()
+)
 
     # ── Persist the access event ──────────────────────────────────
     log_access(user_id=user_id, username=username, chat_id=chat_id)
